@@ -66,7 +66,7 @@ export async function updateContact(contactId, body) {
 
     await fs.writeFile(contactsPath, JSON.stringify(contacts), "utf8");
     return contacts[index];
-  } catch (error) {
+  } catch (err) {
     console.log(err);
   }
 }
