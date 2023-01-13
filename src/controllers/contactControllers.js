@@ -4,58 +4,56 @@ import {
   addContact,
   removeContact,
   updateContact,
-} from "../models/contacts.js";
+  updateStatusContact,
+} from "../services/contacts.js";
 
-export const getContacts = async (req, res, next) => {
-  try {
-    const contacts = await listContacts();
-    res.status(200).json({ contacts, status: "success" });
-  } catch (err) {
-    console.log(err);
-  }
+export const getContactsController = async (req, res, next) => {
+  const contacts = await listContacts();
+  res.status(200).json({ contacts, status: "success" });
 };
 
-export const getContactByIdNew = async (req, res, next) => {
-  try {
-    const contact = await getContactById(req.params.contactId);
-    if (!contact) {
-      return res
-        .status(404)
-        .json({ message: "Contact not found", status: "not found" });
-    }
-    res.status(200).json({ contact, status: "success" });
-  } catch (err) {
-    console.log(err);
-  }
-};
-export const addNewContact = async (req, res, next) => {
-  const { name, email, phone } = req.body;
-  try {
-    const contact = await addContact(name, email, phone);
-    res.status(201).json({ contact, status: "success" });
-  } catch (err) {
-    console.log(err);
-  }
-};
-export const deleteContact = async (req, res, next) => {
-  try {
-    const response = await removeContact(req.params.contactId);
-    if (!response) {
-      return res
-        .status(404)
-        .json({ message: "Contact not found", status: "not found" });
-    }
-    res.status(200).json({ status: "success" });
-  } catch (err) {
-    console.log(err);
-  }
-};
-export const changeContacts = async (req, res) => {
-  const contact = await updateContact(req.params.contactId, req.body);
+export const getContactByIdNewController = async (req, res, next) => {
+  const contact = await getContactById(req.params.contactId);
   if (!contact) {
-    return res
-      .status(404)
-      .json({ message: "Contact not found", status: "not found" });
+    return res.status(400).json({ message: "Contact not found" });
+  }
+  res.status(200).json({ contact, status: "success" });
+};
+
+export const addNewContactController = async (req, res, next) => {
+  const { name, email, phone } = req.body;
+  const contact = await addContact(name, email, phone);
+  res.status(201).json({ contact, status: "success" });
+};
+
+export const deleteContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const response = await removeContact(contactId);
+  if (!response) {
+    return res.status(400).json({ message: "Contact not found" });
+  }
+  res.status(200).json({ status: "success" });
+};
+
+export const changeContactsController = async (req, res) => {
+  const { contactId } = req.params;
+  const { name, email, phone } = req.body;
+  const contact = await updateContact(contactId, { name, email, phone });
+  if (!contact) {
+    return res.status(400).json({ message: "Contact not found" });
+  }
+  res.status(200).json({ contact, status: "success" });
+};
+
+export const addFavoriteContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const { favorite } = req.body;
+  if (!favorite) {
+    return res.status(400).json({ message: "Missing field favorite" });
+  }
+  const contact = await updateStatusContact(contactId, favorite);
+  if (!contact) {
+    return res.status(400).json({ message: "Contact not found" });
   }
   res.status(200).json({ contact, status: "success" });
 };
