@@ -1,26 +1,33 @@
 import express from "express";
 import {
-  addNewContact,
-  changeContacts,
-  deleteContact,
-  getContactByIdNew,
-  getContacts,
+  addNewContactController,
+  changeContactsController,
+  deleteContactController,
+  getContactByIdNewController,
+  getContactsController,
+  addFavoriteContactController,
 } from "../../controllers/contactControllers.js";
-import {
-  addContactValidation,
-  changeContactValidation,
-} from "../../middlewares/validationMiddlewares.js";
+import { contactValidation } from "../../middlewares/validationMiddlewares.js";
+import { asyncWrapper } from "../../helpers/apiHelpers.js";
 
 const router = express.Router();
 
-router.get("/", getContacts);
+router.get("/", asyncWrapper(getContactsController));
 
-router.get("/:contactId", getContactByIdNew);
+router.get("/:contactId", asyncWrapper(getContactByIdNewController));
 
-router.post("/", addContactValidation, addNewContact);
+router.post("/", contactValidation, asyncWrapper(addNewContactController));
 
-router.delete("/:contactId", deleteContact);
+router.delete("/:contactId", asyncWrapper(deleteContactController));
 
-router.put("/:contactId", changeContactValidation, changeContacts);
+router.put(
+  "/:contactId",
+  contactValidation,
+  asyncWrapper(changeContactsController)
+);
 
+router.patch(
+  "/:contactId/favorite",
+  asyncWrapper(addFavoriteContactController)
+);
 export { router };
