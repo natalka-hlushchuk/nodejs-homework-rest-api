@@ -9,25 +9,30 @@ import {
 } from "../../controllers/contactControllers.js";
 import { contactValidation } from "../../middlewares/validationMiddlewares.js";
 import { asyncWrapper } from "../../helpers/apiHelpers.js";
+import { authMiddleware } from "../../middlewares/authMiddlewares.js";
 
-const router = express.Router();
+const contactRouter = express.Router();
+contactRouter.use(authMiddleware);
+contactRouter.get("/", asyncWrapper(getContactsController));
 
-router.get("/", asyncWrapper(getContactsController));
+contactRouter.get("/:contactId", asyncWrapper(getContactByIdNewController));
 
-router.get("/:contactId", asyncWrapper(getContactByIdNewController));
+contactRouter.post(
+  "/",
+  contactValidation,
+  asyncWrapper(addNewContactController)
+);
 
-router.post("/", contactValidation, asyncWrapper(addNewContactController));
+contactRouter.delete("/:contactId", asyncWrapper(deleteContactController));
 
-router.delete("/:contactId", asyncWrapper(deleteContactController));
-
-router.put(
+contactRouter.put(
   "/:contactId",
   contactValidation,
   asyncWrapper(changeContactsController)
 );
 
-router.patch(
+contactRouter.patch(
   "/:contactId/favorite",
   asyncWrapper(addFavoriteContactController)
 );
-export { router };
+export { contactRouter };

@@ -14,7 +14,24 @@ export const contactValidation = (req, res, next) => {
   });
   const { error } = schema.validate(req.body);
   if (error) {
-    next(new ValidationError(error.details));
+    next(new ValidationError(JSON.stringify(error.details)));
+  }
+  next();
+};
+
+export const userValidation = (req, res, next) => {
+  const schema = Joi.object({
+    email: Joi.string()
+      .email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net"] },
+      })
+      .required(),
+    password: Joi.string().min(6).required(),
+  });
+  const { error } = schema.validate(req.body);
+  if (error) {
+    next(new ValidationError(JSON.stringify(error.details)));
   }
   next();
 };
