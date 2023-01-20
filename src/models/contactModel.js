@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { SchemaTypes } from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -20,8 +20,12 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: SchemaTypes.ObjectId,
+      ref: "user",
+    },
   },
   { versionKey: false, timestamps: true }
 );
 
-export const Contact = mongoose.model("contacts", contactSchema);
+export const Contact = mongoose.model("contact", contactSchema);

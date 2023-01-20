@@ -1,4 +1,4 @@
-import { ValidationError, WrongParamsError } from "../helpers/errors.js";
+import { CastError } from "../helpers/errors.js";
 
 export const asyncWrapper = (controller) => {
   return (req, res, next) => {
@@ -7,7 +7,7 @@ export const asyncWrapper = (controller) => {
 };
 
 export const errorHandler = (err, req, res, next) => {
-  if (err instanceof ValidationError || err instanceof WrongParamsError) {
+  if (err instanceof CastError) {
     res.status(err.status).json({ message: err.message });
   }
   res.status(500).json({ message: err.message });
