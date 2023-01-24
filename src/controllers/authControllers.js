@@ -3,6 +3,7 @@ import {
   registration,
   logout,
   changeSubscription,
+  changeAvatar,
 } from "../services/users.js";
 
 export const registrationController = async (req, res, next) => {
@@ -33,11 +34,20 @@ export async function subscriptionController(req, res) {
   const { _id } = req.user;
   const body = req.body;
   const user = await changeSubscription(_id, body.subscription);
-  console.log(user);
   res.status(200).json({
     user: {
       email: user.email,
       subscription: user.subscription,
+    },
+  });
+}
+export async function avatarController(req, res) {
+  const { _id } = req.user;
+  const file = req.file;
+  const user = await changeAvatar(_id, file);
+  res.status(200).json({
+    user: {
+      avatarURL: user.avatarURL,
     },
   });
 }
