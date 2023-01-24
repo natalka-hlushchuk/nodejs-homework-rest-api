@@ -16,7 +16,6 @@ export const authMiddleware = async (req, res, next) => {
       return next(new NotAuthorizeError("Invalid token"));
     }
     req.user = user;
-    console.log(user);
     next();
   } catch (err) {
     next(new NotAuthorizeError("Not authorized"));
