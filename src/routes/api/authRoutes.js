@@ -6,6 +6,8 @@ import {
   currentUserController,
   subscriptionController,
   avatarController,
+  verifyController,
+  repeatverifyController,
 } from "../../controllers/authControllers.js";
 import { asyncWrapper } from "../../helpers/apiHelpers.js";
 import { uploadingAvatarMiddleware } from "../../middlewares/uploadingAvatarMiddlewares.js";
@@ -39,5 +41,8 @@ authRouter.patch(
   uploadingAvatarMiddleware.single("avatar"),
   asyncWrapper(avatarController)
 );
+authRouter.get("/verify/:verificationToken", asyncWrapper(verifyController));
+
+authRouter.post("/verify", asyncWrapper(repeatverifyController));
 
 export { authRouter };
